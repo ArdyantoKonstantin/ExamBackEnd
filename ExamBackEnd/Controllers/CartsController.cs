@@ -198,6 +198,7 @@ namespace ExamBackEnd.Controllers
             {
                 return NotFound();
             }
+            var userId = User.FindFirst(Claims.Subject)?.Value ?? throw new InvalidOperationException("User Id Not Found");
             var cart = await _context.Carts.FindAsync(id);
             if (cart == null)
             {
