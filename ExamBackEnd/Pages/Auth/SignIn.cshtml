@@ -1,0 +1,22 @@
+﻿@page
+@model ExamBackEnd.Pages.Auth.SignInModel
+@{
+}
+
+<h1>Login</h1>
+
+<form method="post">
+    <div class="mt-3">
+        <label asp-for="Form.Email" class="fw-bold">Email</label>
+        <input asp-for="Form.Email" class="form-control" />
+        <span asp-validation-for="Form.Email" class="text-danger"></span>
+    </div>
+    <div class="mt-3">
+        <label asp-for="Form.Password" class="fw-bold">Password</label>
+        <input asp-for=Form.Password class="form-control" type="password" />
+        <span asp-validation-for="Form.Password" class="text-danger"></span>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</form>
