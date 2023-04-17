@@ -27,13 +27,35 @@ namespace ExamBackEnd.Controllers
         // GET: api/Carts
         [HttpGet]
         [Authorize("api")]
-        public async Task<ActionResult<List<Cart>>> GetCarts()
+        public async Task<ActionResult<decimal>> GetCarts(string id)
         {
-          if (_context.Carts == null)
+            
+            if (_context.Carts == null)
           {
               return NotFound();
           }
-            return await _context.Carts.ToListAsync();
+            decimal TotalPrice = 0;
+            var userId = User.FindFirst(Claims.Subject)?.Value ?? throw new InvalidOperationException("User Id Not Found");
+            var carts = await (from x in _context.Carts
+                               join y in _context.CartDetails
+                               on x.Id equals y.CartId
+                               where x.UserId == userId && x.RestaurantId == id
+                               select new CartDetailModel
+                               {
+                                   Id = x.Id,
+                                   FoodItemId = y.FoodItemId,
+                                   FoodItemName = y.FoodItem.Name,
+                                   RestaurantId = id,
+                                   RestaurantName = x.Restaurant.Name,
+                                   Qty = y.Qty,
+                                   Price = y.Qty * y.FoodItem.Price
+                               }).ToListAsync();
+
+            foreach(var item in carts)
+            {
+                TotalPrice += item.Price * item.Qty;
+            }
+            return TotalPrice;
         }
 
         // GET: api/Carts/5
